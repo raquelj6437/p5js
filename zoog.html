@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <title>p5js Template</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.3/p5.js"></script>
+    
+    <script>
+        function setup() {
+            createCanvas(1000,1000)
+        }
+
+        function draw() {
+            ellipseMode(CENTER)
+            //arms
+            fill(102,51,0)
+            translate(330,400)
+            rotate(5)
+            rect(0,0,30,100)
+            resetMatrix()
+            translate(280,350)
+            rotate(90)
+            rect(0,0,30,100)
+            //body
+            resetMatrix()
+            fill(77,0,153)
+            rect(260,350,80,150)
+            //ears
+            fill(102,51,0)
+            ellipse(350,300,30,60)
+            ellipse(250,300,30,60)
+            //head
+            fill(102,51,0)
+            ellipse(300,300,100,100)
+            //eyes
+            fill(255)
+            ellipse(280,290,15,25)
+            ellipse(320,290,15,25)
+            fill(0)
+            ellipse(280,293,7,7)
+            ellipse(320,293,7,7)
+            //legs
+            fill(0,0,51)
+            rect(260,500,30,100)
+            rect(310,500,30,100)
+            //feet
+            fill(0)
+            ellipse(266,600,50,30)
+            ellipse(335,600,50,30)
+            //hands
+            fill(102,51,0)
+            ellipse(440,417,40,40)
+            ellipse(180,320,40,40)
+            //balloon
+            line(450,417,400,200)
+            fill(51,255,255)
+            ellipse(400,200,100,100)
+            point(450,417)
+            //BLM
+            fill(0)
+            textSize(50)
+            text("B",280,390)
+            text("L",280,440)
+            text("M",280,490)
+            //mouth
+            translate(300,330)
+            rotate(5)
+            textSize(30)
+            text("(",0,0)
+        }
+    </script>
+</head>
+<body>
+    <div id="code" class="container-fluid">
+        <script src="https://gist-it.appspot.com/github/raquelj6437/p5js/blob/gh-pages/zoog.html?footer=0"></script>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script>
+        $(window).bind("load", function() {
+            $('#code').before($('#defaultCanvas0').remove());
+        });
+    </script>
+</body>
+
+</html>
