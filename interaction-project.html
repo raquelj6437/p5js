@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <title>p5js Template</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.3/p5.js"></script>
+
+    <script>
+        // variables
+        // defult size of shape 
+        var size1 = 100
+        var size2 = 100
+        var num = 1
+        //defult shape
+        var shapes = rect
+        var shift1 = 1
+        // colors is the array or list
+        var colors
+
+        function setup() {
+            createCanvas(800, 600);
+        }
+
+        function mouseReleased() {
+            // if the mouse is released the code doesnt loop or run
+            noLoop()
+        }
+
+        function draw() {
+            //changes size of shape using the up, down, right, left arrows.
+            if (keyIsDown(UP_ARROW))
+                size2 += 5
+            if (keyIsDown(DOWN_ARROW))
+                size2 -= 5
+            if (keyIsDown(RIGHT_ARROW))
+                size1 += 5
+            if (keyIsDown(LEFT_ARROW))
+                size1 -= 5
+            // changes the shape using shift
+            if (keyIsDown(SHIFT))
+                if (shift1 == 1) {
+                    shapes = rect
+                    // waits 100 miliseconds to change shift1 to 0 if shift is pressed
+                    setTimeout(function() {
+                        shift1 = 0;
+                    }, 100);
+                }
+                else {
+                    shapes = ellipse
+                    // waits 100 miliseconds to change shift1 to 1 if shift is pressed
+                    setTimeout(function() {
+                        shift1 = 1;
+                    }, 100);
+                }
+            // strokeWeight is set to whatever num equals which is 1 or 0
+            strokeWeight(num)
+            // the shape follows the mouse from the middle
+            rectMode(CENTER)
+            //defualt fill = 0
+            fill(0)
+            // directions to draw
+            textSize(15)
+            text("To change the color... To change the shape... To change the size...                      To play...", 20, 20)
+            text("press f                           press Shift           up arrow = increase height                  c = clear, s = stroke or noStroke", 20, 40)
+            text("                                                                  down arrow = decrease height            select a color and shape", 20, 60)
+            text("                                                                  right arrow = increase width                drag your mouse to draw", 20, 79)
+            text("                                                                  left arrow = decrese width", 20, 98)
+            // uses the 3 vaules in the list colors to fill
+            if (colors.length == 3) {
+                fill(colors[0], colors[1], colors[2]);
+            }
+            // uses one color to fill if one value given
+            else if (colors.length == 1) {
+                fill(colors[0])
+            }
+            // alerts the uswer they need more values
+            else if (colors.length == 2) {
+                window.alert("Not enough values! Press Enter and then f.")
+                colors.length = 0
+            }
+            // alerts the user that they have to many values
+            else if (colors.length > 3) {
+                window.alert("Too many values values! Press Enter and then f.")
+                colors.length = 0
+            }
+            // the shape follows the mouse and changes size
+            shapes(mouseX, mouseY, size1, size2)
+        }
+
+        function keyTyped() {
+            // press f to change a color and the user is asked for their input
+            // splits values using commas
+            if (key == "f") {
+                colors = prompt("The fill value has three values. Enter the numbers for the color you want to use and seperate them with commas. Example: 255,255,255. Or the color can be one value. Example: 255.").split(",")
+            }
+            // press s to enabled or disabled stroke
+            else if (key == "s") {
+                if (num == 1) {
+                    num = 0
+                }
+                else{
+                    num = 1
+                }
+            }
+            // clears and resets code
+            else if (key == "c") {
+                clear()
+                fill(0)
+                textSize(15)
+                text("To change the color... To change the shape... To change the size...                      To play...", 20, 20)
+                text("press f                           press Shift           up arrow = increase height                  c = clear, s = stroke or noStroke", 20, 40)
+                text("                                                                  down arrow = decrease height            select a color and shape", 20, 60)
+                text("                                                                  right arrow = increase width                drag your mouse to draw", 20, 79)
+                text("                                                                  left arrow = decrese width", 20, 98)
+            }
+            return false;
+        }
+
+        function mouseDragged () {
+            // loops when mouse is dragged
+            loop()
+        }
+    </script>
+</head>
+
+<body>
+    <div id="code" class="container-fluid">
+        <script src="https://gist-it.appspot.com/github/raquelj6437/p5js/blob/gh-pages/interaction-project.html?footer=0"></script>
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script>
+        $(window).bind("load", function() {
+            $('#code').before($('#defaultCanvas0').remove());
+        });
+    </script>
+</body>
+
+
+</html>
