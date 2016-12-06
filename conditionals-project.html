@@ -22,6 +22,7 @@
     var Loop = 1
     var randomColor
     var size
+    var click1
 
     function setup() {
       createCanvas(800, 600);
@@ -30,9 +31,10 @@
     function draw() {
       fill("white")
       if (level == 0) {
-        randomColor = Math.round(random(1, 4))
+        click1 = 0
         n = 200
-        
+        randomColor = Math.round(random(1, 4))
+
         //instructions
         background("black")
         fill("white")
@@ -43,7 +45,7 @@
         text("blend in making it harder to see.", 10, 250)
         text("If you click the wrong color you lose.", 10, 300)
         text("Press the right arrow key to play.", 10, 500)
-        //right key to play game
+          //right key to play game
         if (keyIsDown(RIGHT_ARROW))
           level = 1
       }
@@ -51,9 +53,9 @@
         background("black")
         ellipse(mouseX, mouseY, 10, 10)
         noStroke()
-        // score appears middle of screen
+          // score appears middle of screen
         text("score: " + score, 300, 315)
-        // the four colored ellipse 
+          // the four colored ellipse 
         fill(255 - r, 0, 0)
         ellipse(width / 4, height / 4, width / 2, height / 2)
         fill(0, 0, 255 - b)
@@ -62,7 +64,7 @@
         ellipse(width * .25, height * .75, width / 2, height / 2)
         fill(255 - y, 255 - y, 0)
         ellipse(width * .75, height / 4, width / 2, height / 2)
-        
+
         // if none of the right ellipse are clicked, you lose
         if (f == 0 && a == 0 && l == 0 && s == 0) {
           background("red")
@@ -70,7 +72,7 @@
           fill("white")
           text("You Lose, refresh to play again.", 0, height / 2)
         }
-        
+
         //subtracts a certain amount from the color to make it darker or brighter
         if (randomColor == 1) {
           r = 0
@@ -100,63 +102,67 @@
     }
 
     function mouseClicked() {
+      click1++
       // changes the color randomly
-      setTimeout(function() {
-        randomColor = Math.round(random(1, 4));
-      }, random(x, z));
-      // if the mouse is in the area of circle and clicks it, you gain points
-      if (randomColor == 1 && mouseX < width / 2 && mouseY < height / 2) {
-        score++;
-        n -= 10
-        f = 1
-      }
-      // else this is set to 0 and if f,a,l, and s = 0 then you lose
-      else {
-        f = 0
-      }
+      if (click1 >= 2) {
+        setTimeout(function() {
+          randomColor = Math.round(random(1, 4));
+        }, random(x, z));
 
-      if (randomColor == 2 && mouseX > width / 2 && mouseY > height / 2) {
-        score++;
-        n -= 10
-        a = 1
-      }
-      else {
-        a = 0
-      }
+        // if the mouse is in the area of circle and clicks it, you gain points
+        if (randomColor == 1 && mouseX < width / 2 && mouseY < height / 2) {
+          score++;
+          n -= 10
+          f = 1
+        }
+        // else this is set to 0 and if f,a,l, and s = 0 then you lose
+        else {
+          f = 0
+        }
 
-      if (randomColor == 3 && mouseX < width / 2 && mouseY > height / 2) {
-        score++;
-        n -= 10
-        l = 1
-      }
-      else {
-        l = 0
-      }
+        if (randomColor == 2 && mouseX > width / 2 && mouseY > height / 2) {
+          score++;
+          n -= 10
+          a = 1
+        }
+        else {
+          a = 0
+        }
 
-      if (randomColor == 4 && mouseX > width / 2 && mouseY < height / 2) {
-        score++;
-        n -= 10
-        s = 1
-      }
-      else {
-        s = 0
+        if (randomColor == 3 && mouseX < width / 2 && mouseY > height / 2) {
+          score++;
+          n -= 10
+          l = 1
+        }
+        else {
+          l = 0
+        }
+
+        if (randomColor == 4 && mouseX > width / 2 && mouseY < height / 2) {
+          score++;
+          n -= 10
+          s = 1
+        }
+        else {
+          s = 0
+        }
       }
     }
   </script>
 </head>
 
 <body>
-    <div id="code" class="container-fluid">
-        <script src="https://gist-it.appspot.com/github/raquelj6437/p5js/blob/gh-pages/conditionals-project.html?footer=0"></script>
-    </div>
+  <div id="code" class="container-fluid">
+    <script src="https://gist-it.appspot.com/github/raquelj6437/p5js/blob/gh-pages/condtionals-project.html?footer=0"></script>
+  </div>
 
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script>
-        $(window).bind("load", function() {
-            $('#code').before($('#defaultCanvas0').remove());
-        });
-    </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script>
+    $(window).bind("load", function() {
+      $('#code').before($('#defaultCanvas0').remove());
+    });
+  </script>
 </body>
 
 
