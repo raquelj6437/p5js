@@ -1,0 +1,909 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <title>p5js Template</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.3/p5.js"></script>
+
+    <script>
+        //var audio = new Audio('audio_file.mp3');
+        
+        //declaring variables for later use
+        var piece1;
+        var money = 500;
+        var money2 = 500
+        var dieNum = 0;
+        var spots1, spots2, spots3, spots4;
+        var card = 0;
+        var goodCard = ["Collect $200 from other player", "Gain $100", "Gain $50"];
+        var badCard = ["Lose $200", "Lose $100", "Lose $50"];
+        var x = 100;
+        var y = 100;
+        var x2 = 100;
+        var y2 = 100;
+        var spaces = 0;
+        var spaces1 = 0;
+        var rounds = 0;
+        var player = 1;
+        var spanishAnswer, jailAnswer;
+        var commChest = 0;
+        var chestCards = ["Collect $100!", "You lose $100", "You gain $50!", "Lose $75"];
+        var move = 0,
+            move1 = 0;
+        var SB = "no",
+            SB1 = "no",
+            boardwalk = "no",
+            boardwalk1 = "no",
+            PA = "no",
+            PA1 = "no",
+            NYA = "no",
+            NYA1 = "no",
+            OA = "no",
+            OA1 = "no",
+            BA = "no",
+            BA1 = "no",
+            SCP = "no",
+            SCP1 = "no"
+
+        function setup() {
+            createCanvas(1900, 850);
+            background(91, 190, 234);
+            
+            // sets the object to piece which allows it to run
+            piece1 = new Piece();
+        }
+
+        function keyTyped() {
+            // runs player one
+            if (card == 0 && commChest == 0 && move == 0) {
+                if (key == "r" || key == "R") {
+                    // control the die to determine spaces
+                    if (spaces >= 14 && player == 1) {
+                        dieNum = 20 - spaces;
+                        rounds++;
+                    }
+                    else {
+                        dieNum = Math.round(random(1, 6));
+                    }
+                    
+                    // calls the die function so that it is visible
+                    die();
+                    
+                    // add the spaces with the number that appears on die
+                    if (player == 1) {
+                        spaces += dieNum;
+                    }
+                    
+                    // allows the piece to move across the board
+                    if (player == 1) {
+                        // multiples x by the number on die
+                        if (spaces <= 7) {
+                            x += 240 * dieNum;
+                        }
+                        
+                        if (spaces >= 11) {
+                            x -= 240 * dieNum;
+                            y = 720;
+                        }
+                        // sets spaces to 0 when it is equal or greater to 20
+                        if (spaces >= 20) {
+                            spaces = 0;
+                        }
+
+                        if (spaces == 0) {
+                            x = 100;
+                            y = 100;
+                        }
+                    }
+                    // calls the function playerOne() so that it is able to move on the Y
+                    playerOne();
+                    places()
+                    player = 2
+                }
+            }
+
+            //runs player 2
+            if (card == 0 && commChest == 0 && move1 == 0) {
+                if (key == "a" || key == "A") {
+                    //movement of player 2 piece based on number of spaces moved
+                    if (spaces1 >= 14 && player == 2) {
+                        dieNum = 20 - spaces;
+                        rounds++;
+                    }
+                    else {
+                        dieNum = Math.round(random(1, 6));
+                    }
+                    die(); //function called to make die visible on screen when rolled
+                    if (player == 2) {
+                        spaces1 += dieNum; //adds roll to spaces
+                    }
+
+                    //what allows piece to move across board
+                    if (player == 2) {
+                        //multiplies x by number rolled
+                        if (spaces1 <= 7) {
+                            x2 += 240 * dieNum;
+                        }
+
+                        if (spaces1 >= 11) {
+                            x2 -= 240 * dieNum;
+                            y2 = 720;
+                        }
+
+                        //when player reaches end of board, spaces will reset
+                        if (spaces1 >= 20) {
+                            spaces1 = 0;
+                        }
+
+                        if (spaces1 == 0) {
+                            x2 = 100;
+                            y2 = 100;
+                        }
+                    }
+                    //movement of piece and switching between player 1 and 2
+                    playerTwo();
+                    places()
+                    player = 1
+                }
+            }
+        }
+
+        function draw() {
+            // creates the base for the die
+            fill(255);
+            rect(width / 2, height / 2, 100, 100);
+            
+            // creates the boxes on the board
+            fill(255);
+            for (var i = 0; i < 8; i++) {
+                rect(237 * i, 0, 237, 237);
+                rect(237 * i, 613, 237, 237);
+            }
+            
+            // creates the boxes on the Y
+            rect(0, 237, 237, 190);
+            rect(0, 427, 237, 190);
+            rect(237 * 7, 237, 237, 190);
+            rect(237 * 7, 427, 237, 190);
+            
+            // calls the functions
+            die();
+            cards();
+            boxes();
+            chest();
+
+            // allows piece to move and be displayed
+            piece1.move();
+            piece1.display();
+
+            // creates player two
+            fill(100, 60, 237);
+            ellipse(x2, y2, 50, 50);
+
+            // allows player to win or lose if they have over or equal to 1000 dollars or less then or equal to 0
+            if (money <= 0){
+                window.alert("You lose player one! refresh to play again")
+            }
+            if (money2 <= 0){
+                window.alert("You lose player two! refresh to play again")
+            }
+            if (money >= 1000){
+                window.alert("You win player one! refresh to play again")
+            }
+            if (money2 >= 1000){
+                window.alert("You win player two! refresh to play again")
+            }
+
+        }
+
+        // creates an object to for making player one easier
+        function Piece() {
+            this.y = y;
+            this.x = x;
+
+            this.move = function() {
+                this.x = x;
+            };
+
+            this.display = function() {
+                fill(0);
+                ellipse(this.x, y, 50, 50);
+            };
+        }
+        
+        // creates the faces on tge die
+        function die() {
+            fill(255);
+            rect(width / 2, height / 2, 100, 100);
+            fill(0);
+
+            if (dieNum == 1) {
+                ellipse(1001, 471, 20, 20);
+            }
+            else if (dieNum == 2) {
+                ellipse(980, 450, 20, 20);
+                ellipse(1020, 500, 20, 20);
+            }
+            else if (dieNum == 3) {
+                ellipse(980, 500, 20, 20);
+                ellipse(1000, 473, 20, 20);
+                ellipse(1020, 450, 20, 20);
+            }
+            else if (dieNum == 4) {
+                ellipse(980, 450, 20, 20);
+                ellipse(1020, 500, 20, 20);
+                ellipse(980, 500, 20, 20);
+                ellipse(1020, 450, 20, 20);
+            }
+            else if (dieNum == 5) {
+                ellipse(980, 450, 20, 20);
+                ellipse(1020, 500, 20, 20);
+                ellipse(980, 500, 20, 20);
+                ellipse(1020, 450, 20, 20);
+                ellipse(1000, 473, 20, 20);
+            }
+            else if (dieNum == 6) {
+                ellipse(980, 450, 20, 20);
+                ellipse(1020, 500, 20, 20);
+                ellipse(980, 500, 20, 20);
+                ellipse(1020, 450, 20, 20);
+                ellipse(1020, 475, 20, 20);
+                ellipse(980, 475, 20, 20);
+            }
+        }
+
+        // creates the good and bad cards on the board
+        function cards() {
+            textSize(50);
+
+            fill("blue");
+            rect(700, 270, 150, 300);
+
+            fill("red");
+            rect(1200, 270, 150, 300);
+
+            fill("white");
+
+            text("good", 720, 370);
+            text("card", 720, 470);
+
+            text("bad", 1220, 370);
+            text("card", 1220, 470);
+        }
+
+        // allows to click on the cards depending on which space the player is on
+        function mousePressed() {
+            if (card == 1) {
+                if (mouseX > 700 && mouseX < 850 && mouseY > 270 && mouseY < 570) {
+                    var goCard = Math.round(random(0, goodCard.length - 1))
+                    window.alert(goodCard[goCard]);
+                    card = 0;
+                    // adds 200 to player one and takes 200 from player two
+                    if (goCard == 0 && player == 1) {
+                        money += 200
+                        money2 -= 200
+                    }
+                    
+                    // adds 100 to player one
+                    if (goCard == 1 && player == 1) {
+                        money += 100
+                    }
+                    
+                    // add 50 to player one
+                    if (goCard == 2 && player == 1) {
+                        money += 50
+                    }
+                    if (goCard == 0 && player == 2) {
+                        money2 += 200
+                        money -= 200
+                    }
+                    if (goCard == 1 && player == 2) {
+                        money2 += 100
+                    }
+                    if (goCard == 2 && player == 2) {
+                        money += 50
+                    }
+                    console.log(goodCard[goCard])
+                }
+                else {
+                    window.alert("click the good card");
+                }
+            }
+
+            if (card == 2) {
+                if (mouseX > 1200 && mouseX < 1350 && mouseY > 270 && mouseY < 570) {
+                    var baCard = Math.round(random(0, badCard.length - 1))
+                    window.alert(badCard[baCard]);
+                    
+                    // subtracts 200 from player 1
+                    if (baCard == 0 && player == 1) {
+                        money -= 200
+                    }
+                    
+                    // subtracts 50 from player one
+                    if (baCard == 2 && player == 1) {
+                        money -= 50
+                    }
+                    
+                    // subtracts 100 from player one
+                    if (baCard == 1 && player == 1) {
+                        money -= 100
+                    }
+                    if (baCard == 1 && player == 2) {
+                        money2 -= 100
+                    }
+                    if (baCard == 0 && player == 2) {
+                        money2 -= 200
+                    }
+                    if (baCard == 2 && player == 2) {
+                        money2 -= 50
+                    }
+                    card = 0;
+                    console.log(badCard[baCard]);
+                }
+                else {
+                    window.alert("click the bad card");
+                }
+            }
+
+            //what makes the player click on community chest and outcomes of doing so
+            if (commChest == 1) {
+                if (mouseX > 300 && mouseX < 600 && mouseY > 300 && mouseY < 600) { //coordiantes of chest on screen
+                    //setting the index of the chest array to a variable so it can be displayed on screen
+                    var num = chestCards[Math.round(random(0, chestCards.length - 1))] 
+                    window.alert(num);
+                    commChest = 0; 
+                    
+                    //adds $100 to either player 1 or 2
+                    if (num == chestCards[0] && player == 1) {
+                        money += 100;
+                    }
+                    else if (num == chestCards[0] && player == 2) {
+                        money2 += 100;
+                    }
+                    
+                    //subtracts $100 from either player 1 or 2
+                    if (num == chestCards[1] && player == 1) {
+                        money -= 100;
+                    }
+                    else if (num == chestCards[1] && player == 2) {
+                        money2 -= 100;
+                    }
+                    
+                    //adds $50 to either player 1 or 2
+                    if (num == chestCards[2] && player == 1) {
+                        money += 50;
+                    }
+                    else if (num == chestCards[2] && player == 2) {
+                        money2 += 50;
+                    }
+                    
+                    //subtracts $75 form either player 1 or 2
+                    if (num == chestCards[3] && player == 1) {
+                        money -= 75;
+                    }
+                    else if (num == chestCards[3] && player == 2) {
+                        money2 -= 75;
+                    }
+                }
+                else {
+                    window.alert("Click on community chest"); //if the player does not click within the coordinates of the chest, it will alert the user
+                }
+            }
+        }
+
+        // allows text to appear on boxes
+        function boxes() {
+            spots1 = ["START", "Take a Good Card", "Community Chest", "Pay Taxes: $200", "Say 20 in Spanish", "Take a Bad Card", "Move forward 3", "Mystery Space"];
+            spots2 = ["Sunset Boulevard:", "Boardwalk:"];
+            spots3 = ["Community Chest", "Baltic Avenue: ", "Oriental Avenue:", "New York Avenue:", "Take a Bad Card", "Pacific Avenue:", "Community Chest", "Free Parking"];
+            spots4 = ["St. Charles Place:", "Take a Good Card"];
+
+
+            for (var i = 0; i < spots1.length; i++) {
+                fill(0);
+                textSize(25);
+                text(spots1[i], 240 * i, 40);
+            }
+
+            text(spots2[0], 1665, 275);
+            text(spots2[1], 1665, 460);
+            text("$200", 1665, 310);
+            text("$200", 1665, 500);
+
+            for (i = 0; i < spots3.length; i++) {
+                text(spots3[i], 240 * i, 800);
+            }
+
+            text(spots4[0], 15, 275);
+            text(spots4[1], 15, 460);
+            text("$70", 15, 310);
+            text("$30", 250, 760);
+            text("$50", 490, 760);
+            text("$100", 720, 760);
+            text("$150", 1190, 760);
+        }
+        
+        // creates an action for each place the player lands on
+        function places() {
+            fill(255);
+            rect(250, 270, 250, 100);
+            fill(0);
+            text(" P1 Money: $" + money, 250, 300);
+            text(" P2 Money: $" + money2, 250, 350);
+
+
+            if (player == 1) {
+                // adds 100 everytime the player lands on start
+                if (rounds >= 1 && spaces == 0) {
+                    money += 100;
+                }
+                // calls the good card
+                if (spaces == 1) {
+                    card = 1;
+                }
+                // calls the chest
+                if (spaces == 2) {
+                    commChest = 1;
+                }
+                // subtracts 200 from player one
+                if (spaces == 3) {
+                    money -= 200;
+                }
+                // ask a spanish question to player
+                if (spaces == 4) {
+                    var spanishAnswer = prompt("How do you say 20 in Spanish?");
+                    if (spanishAnswer == "veinte") {
+                        window.alert("Correct! You gain $100.");
+                        money += 100;
+                    }
+                    else {
+                        window.alert("Incorrect! The answer was 'veinte'. You lose $100.");
+                        money -= 100;
+                    }
+                }
+                // calls bad card
+                if (spaces == 5) {
+                    card = 2;
+                }
+                // makes the person move 3 spaces forward
+                if (spaces == 6) {
+                    spaces += 2;
+                }
+                // something to put on the free parking space
+                if (spaces == 7) {
+                    window.alert("This is just another space. Roll Again.")
+                }
+                // allows person to buy first property
+                if (spaces == 8) {
+                    if (SB1 == "no") {
+                        SB = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (SB == "yes") {
+                        money -= 200
+                    }
+                    if (SB1 == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money -= 100
+                        money2 += 100
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+                // allows person to buy second property
+                if (spaces == 9) {
+                    if (boardwalk1 == "no") {
+                        boardwalk = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (boardwalk == "yes") {
+                        money -= 200
+                    }
+                    if (boardwalk1 == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money -= 100
+                        money2 += 100
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+                // allows 10th box to say something
+                if (spaces == 10) {
+                    window.alert("You can pretend this space actually does something.")
+                }
+                // calls for the chest
+                if (spaces == 11) {
+                    commChest = 1;
+                }
+                // allows person to buy third property
+                if (spaces == 12) {
+                    if (PA1 == "no") {
+                        PA = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (PA == "yes") {
+                        money -= 150
+                        window.alert("It is bought!")
+                    }
+                    if (PA1 == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money -= 75
+                        money2 += 75
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+                // calls bad card
+                if (spaces == 13) {
+                    card = 2;
+                }
+                // allows person to buy fourth property
+                if (spaces == 14) {
+                    if (NYA1 == "no") {
+                        NYA = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (NYA == "yes") {
+                        money -= 100
+                        window.alert("It is bought!")
+                    }
+                    if (NYA1 == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money -= 50
+                        money2 += 50
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+                // allows person to buy fifth property
+                if (spaces == 15) {
+                    if (OA1 == "no") {
+                        OA = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (OA == "yes") {
+                        money -= 50
+                        window.alert("It is bought!")
+                    }
+                    if (OA1 == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money -= 25
+                        money2 += 25
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+                // allows person to buy sixth property
+                if (spaces == 16) {
+                    if (BA1 == "no") {
+                        BA = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (BA == "yes") {
+                        money -= 30
+                        window.alert("It is bought!")
+                    }
+                    if (BA1 == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money -= 15
+                        money2 += 15
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+                
+                //player picks from community chest
+                if (spaces == 17) {
+                    commChest = 1;
+                }
+                //player picks good card
+                // calls good card
+                if (spaces == 18) {
+                    card = 1;
+                }
+                // allows person to buy seventh property
+                if (spaces == 19) {
+                    if (SCP1 == "no") {
+                        SCP = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (SCP == "yes") {
+                        money -= 70
+                        window.alert("It is bought!")
+                    }
+                    if (SCP1 == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money -= 35
+                        money2 += 35
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+            }
+
+            //same outcomes for spaces as player 1
+            if (player == 2) {
+                if (rounds >= 1 && spaces1 == 0) {
+                    money2 += 100;
+                }
+                if (spaces1 == 1) {
+                    card = 1;
+                }
+                if (spaces1 == 2) {
+                    commChest = 1;
+                }
+                if (spaces1 == 3) {
+                    money2 -= 200;
+                }
+                if (spaces1 == 4) {
+                    var spanishAnswer = prompt("How do you say 20 in Spanish?");
+                    if (spanishAnswer == "veinte") {
+                        window.alert("Correct! You gain $100.");
+                        money2 += 100;
+                    }
+                    else {
+                        window.alert("Incorrect! The answer was 'veinte'. You lose $100.");
+                        money2 -= 100;
+                    }
+                }
+                if (spaces1 == 5) {
+                    card = 2;
+                }
+
+                if (spaces1 == 6) {
+                    spaces += 2;
+                }
+
+                if (spaces1 == 7) {
+                    window.alert("This is just another space. Roll Again.")
+                }
+
+                if (spaces1 == 8) {
+                    if (SB == "no") {
+                        SB1 = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (SB1 == "yes") {
+                        money2 -= 200
+                        window.alert("It is bought!")
+                    }
+                    if (SB == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money2 -= 100
+                        money += 100
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+                if (spaces1 == 9) {
+                    if (boardwalk == "no") {
+                        boardwalk1 = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (boardwalk1 == "yes") {
+                        money2 -= 200
+                        window.alert("It is bought!")
+                    }
+                    if (boardwalk == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money2 -= 100
+                        money += 100
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+
+                if (spaces1 == 10) {
+                    window.alert("You can pretend this space actually does something.")
+                }
+
+                if (spaces1 == 11) {
+                    commChest = 1;
+                }
+                if (spaces1 == 12) {
+                    if (PA == "no") {
+                        PA1 = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (PA1 == "yes") {
+                        money2 -= 150
+                        window.alert("It is bought!")
+                    }
+                    if (PA == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money2 -= 75
+                        money += 75
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+                if (spaces1 == 13) {
+                    card = 2;
+                }
+                if (spaces1 == 14) {
+                    if (NYA == "no") {
+                        NYA1 = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (NYA1 == "yes") {
+                        money2 -= 100
+                        window.alert("It is bought!")
+                    }
+                    if (NYA == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money2 -= 50
+                        money += 50
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+                if (spaces1 == 15) {
+                    if (OA == "no") {
+                        OA1 = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (OA1 == "yes") {
+                        money2 -= 50
+                        window.alert("It is bought!")
+                    }
+                    if (OA == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money2 -= 25
+                        money += 25
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+                if (spaces1 == 16) {
+                    if (BA == "no") {
+                        BA1 = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (BA1 == "yes") {
+                        money2 -= 30
+                        window.alert("It is bought!")
+                    }
+                    if (BA == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money2 -= 15
+                        money += 15
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+                if (spaces1 == 17) {
+                    commChest = 1;
+                }
+                if (spaces1 == 18) {
+                    card = 1;
+                }
+                if (spaces1 == 19) {
+                    if (SCP == "no") {
+                        SCP1 = prompt("Would you like to buy this property? (Type yes or no) If you buy this property, everytime the opposite player lands on it, they pay rent.")
+                    }
+                    if (SCP1 == "yes") {
+                        money2 -= 70
+                        window.alert("It is bought!")
+                    }
+                    if (SCP == "yes") {
+                        window.alert("You owe player two rent, the rent is half of the cost.")
+                        money2 -= 35
+                        money += 35
+                    }
+                    else {
+                        window.alert("Keep rolling!")
+                    }
+                }
+            }
+        }
+
+        // allows player one to move on the Y
+        function playerOne() {
+            if (player == 1) {
+                if (spaces == 8) {
+                    x = 1775;
+                    y = 320;
+                }
+                if (spaces == 9) {
+                    x = 1775;
+                    y = 520;
+                }
+                if (spaces == 10) {
+                    x = 1775;
+                    y = 720;
+                }
+                if (spaces == 11) {
+                    x = 1535;
+                }
+                if (spaces == 12) {
+                    x = 1295;
+                }
+                if (spaces == 13) {
+                    x = 1055;
+                }
+                if (spaces == 18) {
+                    y = 520;
+                    x = 100;
+                }
+                if (spaces == 19) {
+                    y = 320;
+                    x = 100;
+                }
+            }
+        }
+
+        //allows player 2 to move along Y axis of board
+        function playerTwo() {
+            if (player == 2) {
+                if (spaces1 == 8) {
+                    x2 = 1775;
+                    y2 = 320;
+                }
+                if (spaces1 == 9) {
+                    x2 = 1775;
+                    y2 = 520;
+                }
+                if (spaces1 == 10) {
+                    x2 = 1775;
+                    y2 = 720;
+                }
+
+                if (spaces1 == 18) {
+                    y2 = 520;
+                    x2 = 100;
+                }
+                if (spaces1 == 19) {
+                    y2 = 320;
+                    x2 = 100;
+                }
+                if (spaces1 == 11) {
+                    x2 = 1535;
+                }
+                if (spaces1 == 12) {
+                    x2 = 1295;
+                }
+                if (spaces1 == 13) {
+                    x2 = 1055;
+                }
+            }
+        }
+
+        // creates the chest for the board
+        function chest() {
+            fill('tan');
+            ellipse(450, 450, 300, 100)
+
+            fill(153, 102, 51);
+            rect(300, 450, 300, 100);
+
+            fill('yellow');
+            rect(425, 425, 50, 50);
+
+            fill(0);
+            rect(437.5, 437.5, 25, 25);
+
+            fill(255);
+            rect(325, 500, 250, 50);
+            textSize(30);
+            stroke(0);
+            fill(0);
+            text("Community Chest", 330, 530);
+        }
+    </script>
+</head>
+
+<body>
+    <div id="code" class="container-fluid">
+        <script src="https://gist-it.appspot.com/github/raquelj6437/p5js/blob/gh-pages/monopoly.html?footer=0"></script>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script>
+        $(window).bind("load", function() {
+            $('#code').before($('#defaultCanvas').remove());
+        });
+    </script>
+</body>
+
+</html>
